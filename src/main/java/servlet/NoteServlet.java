@@ -133,8 +133,6 @@ public class NoteServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    	request.setCharacterEncoding("UTF-8");
-        response.setContentType("application/json; charset=" + "UTF-8");
         // Obtém o caminho da URL após "/notes/"
         String pathInfo = request.getPathInfo();
         
