@@ -1,6 +1,11 @@
 package testes;
 
-import org.junit.jupiter.api.AfterAll;
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -8,48 +13,26 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
 import io.restassured.RestAssured;
-import server.TomcatServer;
-
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.*;
-
-import java.util.Optional;
-
-import org.apache.catalina.LifecycleException;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class NoteApiTest {
+class NoteApiITestIT {
 	
 	private static final Optional<String> PORT = Optional.ofNullable(System.getenv("PORT"));
     private static final Optional<String> HOSTNAME = Optional.ofNullable(System.getenv("HOSTNAME"));
-    private static TomcatServer tomcat;
 
     @BeforeAll
-    public static void setup() throws LifecycleException, InterruptedException {
-    	// Inicializa o Tomcat antes dos testes
-        tomcat = TomcatServer.getInstance();
-        tomcat.start();
-        boolean status = false; 
-        while(!status) {
-        	status = tomcat.isReady();
-        }
+    public static void setup() {
         
         // Configura a base URI para os testes com RestAssured
         RestAssured.baseURI = "http://" + HOSTNAME.orElse("localhost") + ":" + PORT.orElse("8080");
     }
     
-    @AfterAll
-    public static void finish() throws LifecycleException {
-        // Para o Tomcat após os testes
-        tomcat.stop();
-    }
-
     @Test
     @Order(1)
     public void testGetAllNotes() {
         given()
                 .when()
-                .get("/api/notes")
+                .get("/notes")
                 .then()
                 .statusCode(200)
                 .body("size()", greaterThanOrEqualTo(0));
@@ -65,7 +48,7 @@ class NoteApiTest {
                 .contentType("application/json")
                 .body(requestBody)
                 .when()
-                .post("/api/notes")
+                .post("/notes")
                 .then()
                 .statusCode(201)
                 .body("name", equalTo("Test Note"))
@@ -77,11 +60,13 @@ class NoteApiTest {
     public void testGetNoteById() {
         given()
                 .when()
-                .get("/api/notes/{id}", 1)
+                .get("/notes/{id}", 1)
                 .then()
                 .statusCode(200)
                 .body("id", equalTo(1));
     }
+    
+    
 
     @Test
     @Order(4)
@@ -94,7 +79,7 @@ class NoteApiTest {
                 .contentType("application/json")
                 .body(requestBody)
                 .when()
-                .put("/api/notes/{id}", 1)
+                .put("/notes/{id}", 1)
                 .then()
                 .statusCode(200)
                 .body("name", equalTo("Updated Note"))
@@ -106,8 +91,58 @@ class NoteApiTest {
     public void testDeleteNote() {
         given()
                 .when()
-                .delete("/api/notes/{id}", 1)
+                .delete("/notes/{id}", 1)
                 .then()
                 .statusCode(200);
+    }
+    
+    @Test
+    @Order(6)
+    public void testGetNoteByIdNotFind() {
+        given()
+                .when()
+                .get("/notes/{id}", 2)
+                .then()
+                .statusCode(404);
+    }
+    
+    @Test
+    @Order(7)
+    public void testGetNoteByIdFail() {
+        given()
+                .when()
+                .get("/notes/{id}", "%sdft")
+                .then()
+                .statusCode(400);
+    }
+    
+    @Test
+    @Order(8)
+    public void testUpdateNoteNotFind() {
+        given()
+                .when()
+                .put("/notes/{id}", 2)
+                .then()
+                .statusCode(404);
+    }
+    
+    @Test
+    @Order(9)
+    public void testUpdateNoteNoID() {
+        given()
+                .when()
+                .put("/notes/")
+                .then()
+                .statusCode(400);
+    }
+    
+    @Test
+    @Order(10)
+    public void testUpdateNoteFail() {
+        given()
+                .when()
+                .put("/notes/{id}", "%sdft")
+                .then()
+                .statusCode(400);
     }
 }

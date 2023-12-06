@@ -14,7 +14,7 @@ import com.google.gson.Gson;
 import data.Note;
 import data.Singleton;
 
-@WebServlet(urlPatterns = "/notes/*")
+@WebServlet("/notes/*")
 public class NoteServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private Singleton singleton = Singleton.getInstance();

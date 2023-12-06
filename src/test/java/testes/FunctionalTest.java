@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Optional;
 
-import org.apache.catalina.LifecycleException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
@@ -16,24 +15,15 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
-import server.TomcatServer;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class SeleniumTest {
+class SeleniumTestIT {
 	private static final Optional<String> PORT = Optional.ofNullable(System.getenv("PORT"));
     private static final Optional<String> HOSTNAME = Optional.ofNullable(System.getenv("HOSTNAME"));
-    private static TomcatServer tomcat;
     private static WebDriver driver;
 
     @BeforeAll
-    public static void setup() throws LifecycleException {
-    	// Inicializa o Tomcat antes dos testes
-        tomcat = TomcatServer.getInstance();
-        tomcat.start();
-        boolean status = false; 
-        while(!status) {
-        	status = tomcat.isReady();
-        }
+    public static void setup() {
         // Configurar o WebDriver, por exemplo, para o Chrome
         System.setProperty("webdriver.gecko.driver", "C:\\geckodriver.exe");
         driver = new FirefoxDriver();
@@ -41,10 +31,8 @@ class SeleniumTest {
     }
 
     @AfterAll
-    public static void finish() throws LifecycleException {
-        // Fechar o navegador após cada teste
+    public static void finish() {
         driver.quit();
-        tomcat.stop();
     }
 
     @Test

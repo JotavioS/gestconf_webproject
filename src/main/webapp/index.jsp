@@ -237,7 +237,7 @@
             function showAllNotes() {
                 $.ajax({
                     type: 'GET',
-                    url: '/api/notes',
+                    url: '/notes',
                     dataType: 'json',
                     success: function (data) {
                         $('#noteList').empty();
@@ -286,7 +286,7 @@
             function editNoteConfirmation(id) {
                 $.ajax({
                     type: 'GET',
-                    url: '/api/notes/' + id,
+                    url: '/notes/' + id,
                     dataType: 'json',
                     success: function (note) {
                         $('#modalTitle').text('Editar Nota');
@@ -324,7 +324,7 @@
                 var noteDescription = $('#noteDescription').val();
 
                 var method = id ? 'PUT' : 'POST';
-                var url = id ? '/api/notes/' + id : '/api/notes';
+                var url = id ? '/notes/' + id : '/notes';
 
                 $.ajax({
                     type: method,
@@ -345,7 +345,7 @@
             function deleteNote(id) {
                 $.ajax({
                     type: 'DELETE',
-                    url: '/api/notes/' + id,
+                    url: '/notes/' + id,
                     success: function () {
                         showPopup('Nota excluída com sucesso!', 1000);
                         showAllNotes();
