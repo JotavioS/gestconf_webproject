@@ -12,17 +12,17 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
+import data.Singleton;
 import io.restassured.RestAssured;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class NoteApiITestIT {
+class IntegrationTest {
 	
 	private static final Optional<String> PORT = Optional.ofNullable(System.getenv("PORT"));
     private static final Optional<String> HOSTNAME = Optional.ofNullable(System.getenv("HOSTNAME"));
 
     @BeforeAll
     public static void setup() {
-        
         // Configura a base URI para os testes com RestAssured
         RestAssured.baseURI = "http://" + HOSTNAME.orElse("localhost") + ":" + PORT.orElse("8080");
     }
@@ -60,10 +60,10 @@ class NoteApiITestIT {
     public void testGetNoteById() {
         given()
                 .when()
-                .get("/notes/{id}", 1)
+                .get("/notes/{id}", 3)
                 .then()
                 .statusCode(200)
-                .body("id", equalTo(1));
+                .body("id", equalTo(3));
     }
     
     
@@ -79,7 +79,7 @@ class NoteApiITestIT {
                 .contentType("application/json")
                 .body(requestBody)
                 .when()
-                .put("/notes/{id}", 1)
+                .put("/notes/{id}", 3)
                 .then()
                 .statusCode(200)
                 .body("name", equalTo("Updated Note"))
@@ -91,7 +91,7 @@ class NoteApiITestIT {
     public void testDeleteNote() {
         given()
                 .when()
-                .delete("/notes/{id}", 1)
+                .delete("/notes/{id}", 3)
                 .then()
                 .statusCode(200);
     }
@@ -101,7 +101,7 @@ class NoteApiITestIT {
     public void testGetNoteByIdNotFind() {
         given()
                 .when()
-                .get("/notes/{id}", 2)
+                .get("/notes/{id}", 4)
                 .then()
                 .statusCode(404);
     }
@@ -121,7 +121,7 @@ class NoteApiITestIT {
     public void testUpdateNoteNotFind() {
         given()
                 .when()
-                .put("/notes/{id}", 2)
+                .put("/notes/{id}", 4)
                 .then()
                 .statusCode(404);
     }

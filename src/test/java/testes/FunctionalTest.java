@@ -15,9 +15,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
+import io.github.bonigarcia.wdm.WebDriverManager;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class SeleniumTestIT {
+class FunctionalTest {
 	private static final Optional<String> PORT = Optional.ofNullable(System.getenv("PORT"));
     private static final Optional<String> HOSTNAME = Optional.ofNullable(System.getenv("HOSTNAME"));
     private static WebDriver driver;
@@ -25,7 +26,8 @@ class SeleniumTestIT {
     @BeforeAll
     public static void setup() {
         // Configurar o WebDriver, por exemplo, para o Chrome
-        System.setProperty("webdriver.gecko.driver", "C:\\geckodriver.exe");
+    	WebDriverManager.firefoxdriver().setup();
+    	
         driver = new FirefoxDriver();
         driver.get("http://" + HOSTNAME.orElse("localhost") + ":" + PORT.orElse("8080"));
     }

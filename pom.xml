@@ -4,8 +4,8 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>ifpe.project.webapp</groupId>
-    <artifactId>webproject</artifactId>
+    <groupId>webapp-trabalho-maven</groupId>
+    <artifactId>webapp-trabalho-maven</artifactId>
     <packaging>war</packaging>
     <version>1.0-SNAPSHOT</version>
     <name>webproject Maven Webapp</name>
@@ -18,15 +18,14 @@
     </properties>
 
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
+        <!-- Servlet -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <version>4.0.1</version>
             <scope>provided</scope>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/io.rest-assured/rest-assured -->
+        <!-- Selenium -->
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
@@ -39,6 +38,13 @@
             <artifactId>selenium-java</artifactId>
             <version>3.141.59</version>
         </dependency>
+        <!-- WebDriverManager -->
+        <dependency>
+    		<groupId>io.github.bonigarcia</groupId>
+    		<artifactId>webdrivermanager</artifactId>
+    		<version>5.6.2</version> <!-- Certifique-se de usar a versão mais recente disponível -->
+    		<scope>test</scope>
+		</dependency>
         <!-- Gson -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -53,9 +59,8 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
     <build>
-        <finalName>webproject</finalName>
+        <finalName>webapp</finalName>
         <resources>
             <resource>
                 <directory>src/main/webapp</directory>
@@ -74,6 +79,7 @@
                     <debug>true</debug>
                 </configuration>
             </plugin>
+            <!-- Jacoco -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -155,20 +161,30 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- Surefire -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.1.0</version>
                 <configuration>
                     <argLine>${surefireArgLine}</argLine>
+                    <excludes>
+						<exclude>IntegrationTest</exclude>
+						<exclude>FunctionalTest</exclude>
+					</excludes>
                 </configuration>
             </plugin>
+            <!-- Surefire -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>3.2.2</version>
                 <configuration>
                     <argLine>${testArgLine}</argLine>
+                    <includes>
+						<include>IntegrationTest</include>
+						<include>FunctionalTest</include>
+					</includes>
                 </configuration>
                 <executions>
                     <execution>
@@ -180,6 +196,7 @@
                     </execution>
                 </executions>
             </plugin>
+            <!-- Cargo -->
             <plugin>
                 <groupId>org.codehaus.cargo</groupId>
                 <artifactId>cargo-maven3-plugin</artifactId>
